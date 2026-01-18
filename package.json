@@ -1,0 +1,17 @@
+{
+  "name": "dynamodb-json-converter",
+  "version": "1.0.0",
+  "description": "DynamoDB JSON と 通常の JSON を相互変換するWebアプリ",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
+    "vitest": "^1.2.0"
+  }
+}
