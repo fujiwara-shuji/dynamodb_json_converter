@@ -104,15 +104,17 @@ button {
     grid-template-columns: 3fr 1fr 3fr;
     gap: 1.5rem;
     margin-bottom: 1rem;
+    align-items: stretch;  /* ← 追加：子要素を伸ばす */
 }
 
 .editor-panel {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     flex-direction: column;
+    min-height: 500px;
 }
 
 .panel-header {
@@ -123,6 +125,7 @@ button {
     align-items: center;
     border-bottom: 1px solid #bdc3c7;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .panel-header h2 {
@@ -134,13 +137,26 @@ button {
 /* Textarea */
 textarea {
     width: 100%;
+    flex: 1 1 auto;
     min-height: 400px;
     min-width: 300px;
     padding: 1.5rem;
     border: none;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 0.95rem;
-    line-height: 1.6;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    background-image:
+        repeating-linear-gradient(
+        #fff,
+        #fff calc(1.5rem - 1px),
+        #eee4ea calc(1.5rem - 1px),
+        #eee4ea 1.5rem,
+        #fff 1.5rem
+        );
+    background-origin: content-box;
+    background-clip: content-box;
+    background-attachment: local;
     resize: vertical;
     background-color: #fafafa;
 }
