@@ -1,38 +1,24 @@
 import './style.css';
 import { dynamoToNormal, normalToDynamo } from './converter';
+import { DynamoDBObject, NormalObject } from './types';
+
+// 要素取得するヘルパー関数
+function getElement<T extends HTMLElement>(id: string): T {
+    const element = document.getElementById(id);
+    if (!element) {
+        throw new Error(`Element with id "${id}" not found`);
+    }
+    return element as T;
+}
 
 // DOM要素の取得
-const inputTeextarea = document.getElementById('input') as HTMLTextAreaElement;
-const outputTeextarea = document.getElementById('output') as HTMLTextAreaElement;
-const convertBtn = document.getElementById('convertBtn') as HTMLButtonElement;
-const copyBtn = document.getElementById('copyBtn') as HTMLButtonElement;
-const errorDiv = document.getElementById('error') as HTMLDivElement;
-const inputLabel = document.getElementById('inputLabel') as HTMLHeadingElement;
-const outputLabel = document.getElementById('outputLabel') as HTMLHeadingElement;
-
-// ラジオボタン
-const directionRadios = document.querySelectorAll(
-    'input[name="direction"]'
-) as NodeListOf<HTMLInputElement>;
-
-// 変換方法の取得
-function getDirection(): 'dynamoToNormal' | 'normalToDynamo' {
-    const checked = document.querySelector('input[name="direction"]:checked') as HTMLInputElement;
-    return checked.value as 'dynamoToNormal' | 'normalToDynamo';
-}
-
-// ラベルを更新
-function updateLabels() {
-    const direction = getDirection();
-
-    if (direction === 'dynamoToNormal') {
-        inputLabel.textContent = '入力（DynamoDB JSON）';
-        outputLabel.textContent = '出力（通常の JSON）';
-    } else {
-        inputLabel.textContent = '入力（通常の JSON）';
-        outputLabel.textContent = '出力（DynamoDB JSON）';
-    }
-}
+const normalTextarea = getElement<HTMLTextAreaElement>('normalTextarea');
+const dynamoTextarea = getElement<HTMLTextAreaElement>('dynamoTextarea');
+const toDynamoBtn = getElement<HTMLButtonElement>('toDynamoBtn');
+const toNormalBtn = getElement<HTMLButtonElement>('toNormalBtn');
+const normalCopyBtn = getElement<HTMLButtonElement>('normalCopyBtn');
+const dynamoCopyBtn = getElement<HTMLButtonElement>('dynamoCopyBtn');
+const errorDiv = getElement<HTMLDivElement>('error');
 
 // エラー表示
 function showError(message: string) {
@@ -46,14 +32,15 @@ function hideError() {
 }
 
 // 変換処理
-function convert() {
+function convert(
+    input: string,
+    direction: 'dynamoToNormal' | 'normalToDynamo'
+): DynamoDBObject | NormalObject | null {
     hideError();
-
-    const input = inputTeextarea.value.trim();
 
     if (!input) {
         showError('入力が空です');
-        return;
+        return null;
     }
 
     try {
@@ -61,7 +48,6 @@ function convert() {
         const inputJson = JSON.parse(input);
 
         // 変換
-        const direction = getDirection();
         let result;
 
         if (direction === 'dynamoToNormal') {
@@ -70,8 +56,7 @@ function convert() {
             result = normalToDynamo(inputJson);
         }
 
-        // 結果を整形して表示
-        outputTeextarea.value = JSON.stringify(result, null, 2);
+        return result;
     } catch (error) {
         if (error instanceof SyntaxError) {
             showError('不正なJSON形式です');
@@ -80,13 +65,28 @@ function convert() {
         } else {
             showError('予期しないエラーが発生しました');
         }
+        return null;
+    }
+}
+
+function convertToDynamo() {
+    const input = normalTextarea.value.trim();
+    const result = convert(input, 'normalToDynamo');
+    if (result) {
+        dynamoTextarea.value = JSON.stringify(result, null, 2);
+    }
+}
+
+function convertToNormal() {
+    const input = dynamoTextarea.value.trim();
+    const result = convert(input, 'dynamoToNormal');
+    if (result) {
+        normalTextarea.value = JSON.stringify(result, null, 2);
     }
 }
 
 // コピー処理
-async function copyToClipboard() {
-    const output = outputTeextarea.value;
-
+async function copyToClipboard(output: string, copyBtn: HTMLButtonElement) {
     if (!output) {
         showError('コピーする内容がありません');
         return;
@@ -109,23 +109,33 @@ async function copyToClipboard() {
     }
 }
 
-// イベントリスナー
-convertBtn.addEventListener('click', convert);
-copyBtn.addEventListener('click', copyToClipboard);
+async function copyNormalToClipboard() {
+    const output = normalTextarea.value;
+    await copyToClipboard(output, normalCopyBtn);
+}
 
-// ラジオボタンの変更でラベル更新
-directionRadios.forEach((radio) => {
-    radio.addEventListener('change', updateLabels);
-});
+async function copyDynamoToClipboard() {
+    const output = dynamoTextarea.value;
+    await copyToClipboard(output, dynamoCopyBtn);
+}
+
+// イベントリスナー
+toDynamoBtn.addEventListener('click', convertToDynamo);
+toNormalBtn.addEventListener('click', convertToNormal);
+normalCopyBtn.addEventListener('click', copyNormalToClipboard);
+dynamoCopyBtn.addEventListener('click', copyDynamoToClipboard);
 
 // Enter + Ctrl で変換
-inputTeextarea.addEventListener('keydown', (e) => {
+normalTextarea.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'Enter') {
-        convert();
+        convertToDynamo();
     }
 });
 
-// 初期化
-updateLabels();
+dynamoTextarea.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+        convertToNormal();
+    }
+});
 
 console.log('DynamoDB JSON Converter が起動しました');

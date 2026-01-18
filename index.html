@@ -14,44 +14,36 @@
             </header>
 
             <main>
-                <div class="controls">
-                    <div class="direction-toggle">
-                        <label>
-                            <input type="radio" name="direction" value="dynamoToNormal" checked />
-                            DynamoDB → 通常
-                        </label>
-                        <label>
-                            <input type="radio" name="direction" value="normalToDynamo" />
-                            通常 → DynamoDB
-                        </label>
-                    </div>
-                    <button id="convertBtn" class="btn-primary">変換</button>
-                </div>
-
                 <div class="editor-container">
                     <div class="editor-panel">
                         <div class="panel-header">
-                            <h2 id="inputLabel">入力（DynamoDB JSON）</h2>
+                            <h2 id="inputLabel">通常の JSON</h2>
+                            <button id="normalCopyBtn" class="btn-secondary">コピー</button>
                         </div>
-                        <textarea id="input" placeholder="JSONを入力してください"></textarea>
+                        <textarea
+                            id="normalTextarea"
+                            placeholder="JSONを入力してください"
+                        ></textarea>
+                    </div>
+
+                    <div class="convert-button-wrapper">
+                        <button id="toDynamoBtn" class="btn-primary">→DynamoDBに変換</button>
+                        <button id="toNormalBtn" class="btn-primary">JSONに変換←</button>
                     </div>
 
                     <div class="editor-panel">
                         <div class="panel-header">
-                            <h2 id="outputLabel">出力（通常の JSON）</h2>
-                            <button id="copyBtn" class="btn-secondary">コピー</button>
+                            <h2 id="outputLabel">DynamoDB形式のJSON</h2>
+                            <button id="dynamoCopyBtn" class="btn-secondary">コピー</button>
                         </div>
                         <textarea
-                            id="output"
-                            readonly
+                            id="dynamoTextarea"
                             placeholder="変換結果がここに表示されます"
                         ></textarea>
                     </div>
                 </div>
 
-                <div id="error" class="error-message" style="display: none">
-                    This is error message!
-                </div>
+                <div id="error" class="error-message" style="display: none"></div>
             </main>
 
             <footer>
