@@ -46,7 +46,7 @@ main {
     max-width: 80%;
     min-width: 800px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 1rem;
 }
 
 /* Buttons */
@@ -139,6 +139,7 @@ textarea {
     width: 100%;
     flex: 1 1 auto;
     min-height: 400px;
+    max-height: 70vh;
     min-width: 300px;
     padding: 1.5rem;
     border: none;
