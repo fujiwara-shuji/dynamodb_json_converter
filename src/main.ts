@@ -19,6 +19,7 @@ const toNormalBtn = getElement<HTMLButtonElement>('toNormalBtn');
 const normalCopyBtn = getElement<HTMLButtonElement>('normalCopyBtn');
 const dynamoCopyBtn = getElement<HTMLButtonElement>('dynamoCopyBtn');
 const errorDiv = getElement<HTMLDivElement>('error');
+const sampleBtn = getElement<HTMLButtonElement>('sampleBtn');
 
 // エラー表示
 function showError(message: string) {
@@ -119,11 +120,33 @@ async function copyDynamoToClipboard() {
     await copyToClipboard(output, dynamoCopyBtn);
 }
 
+function setSampleToNormal() {
+    const sampleText = `{
+  "name": "John",
+  "age": "25",
+  "height": "1.60",
+  "hobbies": [ 
+    {
+      "category": "fishing",
+      "history": "3years",
+      "motivation": "high"
+    },
+    {
+      "category": "walking",
+      "totalLength": 14,
+      "motivation": "low"
+    }
+  ]
+}`;
+    normalTextarea.value = sampleText;
+}
+
 // イベントリスナー
 toDynamoBtn.addEventListener('click', convertToDynamo);
 toNormalBtn.addEventListener('click', convertToNormal);
 normalCopyBtn.addEventListener('click', copyNormalToClipboard);
 dynamoCopyBtn.addEventListener('click', copyDynamoToClipboard);
+sampleBtn.addEventListener('click', setSampleToNormal);
 
 // Enter + Ctrl で変換
 normalTextarea.addEventListener('keydown', (e) => {

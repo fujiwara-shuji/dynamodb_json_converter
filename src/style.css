@@ -63,6 +63,8 @@ button {
 .btn-primary {
     background-color: #3498db;
     color: white;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .btn-primary:hover {
