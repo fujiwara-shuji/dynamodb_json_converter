@@ -123,8 +123,8 @@ async function copyDynamoToClipboard() {
 function setSampleToNormal() {
     const sampleText = `{
   "name": "John",
-  "age": "25",
-  "height": "1.60",
+  "age": 25,
+  "height": 1.6,
   "hobbies": [ 
     {
       "category": "fishing",
